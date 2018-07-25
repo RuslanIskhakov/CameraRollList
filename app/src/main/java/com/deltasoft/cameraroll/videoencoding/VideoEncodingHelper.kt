@@ -38,33 +38,31 @@ class VideoEncodingHelper {
     }
 
     private fun decodeTask() {
+        val extractor = MediaExtractor()
         try {
             var width: Int? = null
             var height: Int? = null
             var videoFormat: MediaFormat? = null
 
             val inputFile = File(inputFilePath)
-            Log.d("dstest", "decodeTask: "+ inputFile.exists())
+            Log.d("decodeTask", "decodeTask: "+ inputFile.exists())
 
             if (!inputFile.canRead()) {
                 throw RuntimeException("Unable to read " + inputFile);
             }
 
-
-            //Extractor
-            val extractor = MediaExtractor()
             extractor.setDataSource(inputFile.absolutePath)
             val numTracks = extractor.getTrackCount()
-            Log.d("dstest", "Tracks: "+numTracks)
+            Log.d("decodeTask", "Tracks: "+numTracks)
             for (i in 0..(numTracks-1)) {
                 val format = extractor.getTrackFormat(i)
                 if (null != format) {
                     val mime = format.getString(MediaFormat.KEY_MIME)
-                    Log.d("dstest", "Track $i: $mime")
+                    Log.d("decodeTask", "Track $i: $mime")
                     if (mime.startsWith("video")) {
                         width = format.getInteger(MediaFormat.KEY_WIDTH)
                         height = format.getInteger(MediaFormat.KEY_HEIGHT)
-                        Log.d("dstest", "Frame size $width x $height")
+                        Log.d("decodeTask", "Frame size $width x $height")
                         videoFormat = format
                         extractor.selectTrack(i)
                         break
@@ -86,62 +84,65 @@ class VideoEncodingHelper {
                     mDecoder?.configure(videoFormat, null, null, 0)
                     mDecoder?.start()
 
-                    Log.d("dstest", "Decode cycle start")
-                    var bytesRead = 0
+                    Log.d("decodeTask", "Decode cycle start")
                     var totalBytesRead = 0
+                    var eos = false
                     while (mRunning) {
-                        if (bytesRead>=0) {
+                        if (!eos) {
                             val index = mDecoder?.dequeueInputBuffer(10000) ?: -1
+                            Log.d("decodeTask", "Index: $index")
                             if (index >= 0) {
                                 val buffer = mDecoder?.getInputBuffer(index)
-                                bytesRead = extractor.readSampleData(buffer, 0)
-                                Log.d("dstest", "bytesRead: $bytesRead")
-                                if (bytesRead>0) {
+                                val bytesRead = extractor.readSampleData(buffer, 0)
+                                if (bytesRead > 0) {
                                     totalBytesRead += bytesRead
                                 }
                                 var flags = extractor.getSampleFlags()
-                                if (bytesRead<0) flags = flags or MediaCodec.BUFFER_FLAG_END_OF_STREAM
-                                // сообщаем системе о доступности буфера данных
-                                mDecoder?.queueInputBuffer(index, 0, if (bytesRead>0) bytesRead else 0, 10000L, flags)
+                                eos = (flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM == MediaCodec.BUFFER_FLAG_END_OF_STREAM)//!extractor.advance()
+                                if (eos) {
+                                    flags = flags or MediaCodec.BUFFER_FLAG_END_OF_STREAM
+                                }
+                                mDecoder?.queueInputBuffer(index, 0, if (bytesRead > 0) bytesRead else 0, 10000L, flags)
                                 extractor.advance()
-                                Log.d("dstest", "queueInputBuffer passed: $bytesRead/$totalBytesRead")
+                                Log.d("decodeTask", "queueInputBuffer passed: $bytesRead/$totalBytesRead")
+                                if (eos) {
+                                    Log.d("decodeTask", "End of stream")
+                                }
                             }
                         }
-
                         encodeTask()
+                        Thread.sleep(10)
                     }
-                    Log.d("dstest", "Decode cycle end")
-
-                    extractor.release()
-                    mDecoder?.stop()
-                    mDecoder?.release()
+                    Log.d("decodeTask", "Decode cycle end")
                 }
             }
 
 
         } catch (e: Exception) {
-            Log.e("dstest", "Exception: ", e)
+            Log.e("decodeTask", "Exception: ", e)
+        } finally {
+            extractor.release()
+            mDecoder?.stop()
+            mDecoder?.release()
         }
     }
 
     private fun encodeTask() {
         try {
-
+            
             val info = BufferInfo()
 
             val index = mDecoder?.dequeueOutputBuffer(info, 10000L) ?: -100
-            // заканчиваем работу декодера если достигнут конец потока данных
-            if (index >= 0) { // буфер с индексом index доступен
-                // info.size > 0: если буфер не нулевого размера, то рендерим на Surface
+            if (index >= 0) {
                 val buffer = mDecoder?.getOutputBuffer(index)
-                Log.d("encodeTask", "Bytes decoded: "+info.size)
+                Log.d("encodeTask", "Bytes decoded: " + info.size)
                 mDecoder?.releaseOutputBuffer(index, info.size > 0)
-                if (info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM === MediaCodec.BUFFER_FLAG_END_OF_STREAM) {
-                    mRunning = false
+                if (info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM == MediaCodec.BUFFER_FLAG_END_OF_STREAM) {
                     Log.d("encodeTask", "End of stream")
+                    mRunning = false
                 }
             } else {
-                Log.d("encodeTask", "Index: "+index)
+                Log.d("encodeTask", "Index: " + index)
             }
 
         } catch (e: Exception) {
