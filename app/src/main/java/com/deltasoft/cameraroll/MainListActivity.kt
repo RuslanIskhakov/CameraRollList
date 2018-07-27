@@ -8,8 +8,8 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import com.deltasoft.cameraroll.videoencoding.ExtractDecodeEditEncodeMux
-import com.deltasoft.cameraroll.videoencoding.adapter.ContentsAdapter
-import com.deltasoft.cameraroll.videoencoding.adapter.ContentsItem
+import com.deltasoft.cameraroll.adapter.ContentsAdapter
+import com.deltasoft.cameraroll.adapter.ContentsItem
 import kotlinx.android.synthetic.main.activity_main_list.*
 
 class MainListActivity : AppCompatActivity() {
@@ -21,14 +21,22 @@ class MainListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_list)
 
-        mItems.add(ContentsItem(true, "item 0"))
-        mItems.add(ContentsItem(true, "item 1"))
-        mItems.add(ContentsItem(true, "item 2"))
-        mItems.add(ContentsItem(true, "item 3"))
-        mItems.add(ContentsItem(true, "item 4"))
-        mItems.add(ContentsItem(true, "item 5"))
-        mItems.add(ContentsItem(true, "item 6"))
-        mItems.add(ContentsItem(true, "item 7"))
+        mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
+        mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
+        mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
+        mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
+        mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
+        mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
+        mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
+        mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
+
+//        mItems.add(ContentsItem(true, "item 1"))
+//        mItems.add(ContentsItem(true, "item 2"))
+//        mItems.add(ContentsItem(true, "item 3"))
+//        mItems.add(ContentsItem(true, "item 4"))
+//        mItems.add(ContentsItem(true, "item 5"))
+//        mItems.add(ContentsItem(true, "item 6"))
+//        mItems.add(ContentsItem(true, "item 7"))
 
         setupContents()
 

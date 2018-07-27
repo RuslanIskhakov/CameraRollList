@@ -1,4 +1,4 @@
-package com.deltasoft.cameraroll.videoencoding.adapter
+package com.deltasoft.cameraroll.adapter
 
 data class ContentsItem (val isVideo: Boolean, val filePath: String){
 }
