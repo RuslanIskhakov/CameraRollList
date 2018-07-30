@@ -10,10 +10,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.deltasoft.cameraroll.R
 import com.deltasoft.cameraroll.enums.ContentsType
+import com.deltasoft.cameraroll.interfaces.OnPlusButtonClickListener
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.experimental.async
 
-class ContentsAdapter(val activity: AppCompatActivity, contentsItems: ArrayList<ContentsItem>) : RecyclerView.Adapter<ContentsAdapter.ViewHolder>() {
+class ContentsAdapter(val activity: AppCompatActivity, contentsItems: ArrayList<ContentsItem>, val listener: OnPlusButtonClickListener) : RecyclerView.Adapter<ContentsAdapter.ViewHolder>() {
 
     //TODO store video playback position and resume from the same time position on video gets visible once again
     //TODO handle start/stop events of MainActivity in order to pause/resume video playback
@@ -21,13 +22,13 @@ class ContentsAdapter(val activity: AppCompatActivity, contentsItems: ArrayList<
 
     var items: List<ContentsItem> = contentsItems
         set(newValue){
-            items = ArrayList<ContentsItem>(newValue)
+            field = ArrayList<ContentsItem>(newValue)
             notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_contents_item_layout, parent, false)
-        return ViewHolder(activity, view)
+        return ViewHolder(activity, view, listener)
     }
 
     override fun getItemCount(): Int {
@@ -42,7 +43,7 @@ class ContentsAdapter(val activity: AppCompatActivity, contentsItems: ArrayList<
         }
     }
 
-    class ViewHolder(val activity: AppCompatActivity, itemView: View?) : RecyclerView.ViewHolder(itemView), SurfaceHolder.Callback, MediaPlayer.OnPreparedListener, View.OnClickListener {
+    class ViewHolder(val activity: AppCompatActivity, itemView: View?, val listener: OnPlusButtonClickListener) : RecyclerView.ViewHolder(itemView), SurfaceHolder.Callback, MediaPlayer.OnPreparedListener, View.OnClickListener {
 
         var type: ContentsType = ContentsType.PLUS_ITEM
             set(value) {
@@ -108,7 +109,7 @@ class ContentsAdapter(val activity: AppCompatActivity, contentsItems: ArrayList<
         }
 
         override fun onClick(v: View?) {
-
+            listener.onPlusButtonClick()
         }
 
         override fun surfaceChanged(p0: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {
