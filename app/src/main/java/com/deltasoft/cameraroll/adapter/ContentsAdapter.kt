@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.*
 import android.widget.TextView
 import com.deltasoft.cameraroll.R
+import kotlinx.coroutines.experimental.async
 
 class ContentsAdapter(var contentsItems: ArrayList<ContentsItem>) : RecyclerView.Adapter<ContentsAdapter.ViewHolder>() {
 
@@ -43,7 +44,7 @@ class ContentsAdapter(var contentsItems: ArrayList<ContentsItem>) : RecyclerView
                 }
                 if (surfaceCreated) {
                     releaseMediaPlayer()
-                    if (null != field) createMediaPlayer(field!!)
+                    if (null != field) createMediaPlayer(field!!, 0)
                 }
 
             }
@@ -73,8 +74,10 @@ class ContentsAdapter(var contentsItems: ArrayList<ContentsItem>) : RecyclerView
             Log.d("dstest", "surfaceCreated")
             surfaceCreated = true
             if (null!=filePath) {
-                releaseMediaPlayer()
-                createMediaPlayer(filePath!!)
+                async {
+                    releaseMediaPlayer()
+                    createMediaPlayer(filePath!!, 1)
+                }
             }
         }
 
@@ -82,8 +85,8 @@ class ContentsAdapter(var contentsItems: ArrayList<ContentsItem>) : RecyclerView
             mediaPlayer?.start()
         }
 
-        private fun createMediaPlayer(path: String) {
-            Log.d("dstest", "Create mediaplayer")
+        private fun createMediaPlayer(path: String, src: Int) {
+            Log.d("dstest", "Create mediaplayer: $src")
             mediaPlayer = MediaPlayer()
             mediaPlayer?.setDisplay(surfaceHolder)
             mediaPlayer?.setOnPreparedListener(this)
