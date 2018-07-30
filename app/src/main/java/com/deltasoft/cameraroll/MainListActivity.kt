@@ -21,11 +21,12 @@ class MainListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_list)
 
+        //TODO make enum for contents type image/video
+        mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
+        mItems.add(ContentsItem(false, "file:///sdcard/Download/fuu_400x400.jpg"))
         mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
         mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
-        mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
-        mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
-        mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
+        mItems.add(ContentsItem(false, "file:///sdcard/Download/fuu_400x400.jpg"))
         mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
         mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
         mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
@@ -70,7 +71,7 @@ class MainListActivity : AppCompatActivity() {
 
     private fun setupContents() {
         if (mAdapter == null) {
-            mAdapter = ContentsAdapter(mItems)
+            mAdapter = ContentsAdapter(this, mItems)
             contentsRecyclerView.setLayoutManager(LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false))
             contentsRecyclerView.setAdapter(mAdapter)
         } else {

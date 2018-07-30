@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CameraRollList</string>
+    <string name="please_wait_text">Please wait...</string>
 </resources>
