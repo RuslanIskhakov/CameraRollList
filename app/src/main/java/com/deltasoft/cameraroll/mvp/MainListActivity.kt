@@ -7,7 +7,10 @@ import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
+import android.view.View
+import android.widget.ProgressBar
 import com.deltasoft.cameraroll.videoencoding.ExtractDecodeEditEncodeMux
 import com.deltasoft.cameraroll.adapter.ContentsAdapter
 import com.deltasoft.cameraroll.adapter.ContentsItem
@@ -35,12 +38,6 @@ class MainListActivity : AppCompatActivity(), OnPlusButtonClickListener, MainLis
         setContentView(R.layout.activity_main_list)
 
         setupContents()
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            //test()
-        } else {
-            requestWriteExternalStoragePermission()
-        }
     }
 
     override fun onStart() {
@@ -63,13 +60,8 @@ class MainListActivity : AppCompatActivity(), OnPlusButtonClickListener, MainLis
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == 101 && permissions[0] == Manifest.permission.WRITE_EXTERNAL_STORAGE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            //test()
+            mPresenter.onPlusButtonClick()
         }
-    }
-
-    private fun test() {
-        val test = ExtractDecodeEditEncodeMux()
-        test.test()
     }
 
     private fun setupContents() {
@@ -83,8 +75,11 @@ class MainListActivity : AppCompatActivity(), OnPlusButtonClickListener, MainLis
     }
 
     override fun onPlusButtonClick() {
-        mPresenter.onPlusButtonClick()
-
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            mPresenter.onPlusButtonClick()
+        } else {
+            requestWriteExternalStoragePermission()
+        }
     }
 
     override fun startMediaPicker() {
@@ -92,7 +87,7 @@ class MainListActivity : AppCompatActivity(), OnPlusButtonClickListener, MainLis
         intent.putExtra("title", "Select media")
         // Mode 1 for both images and videos selection, 2 for images only and 3 for videos!
         intent.putExtra("mode", 1)
-        intent.putExtra("maxSelection", 10) // Optional
+        intent.putExtra("maxSelection", 1) // Optional
         startActivityForResult(intent, OPEN_MEDIA_PICKER)
     }
 
@@ -110,10 +105,40 @@ class MainListActivity : AppCompatActivity(), OnPlusButtonClickListener, MainLis
     }
 
     override fun addItem(item: ContentsItem) {
-        mItems.add(item)
+        runOnUiThread(Runnable {
+            mItems.add(item)
+        })
     }
 
     override fun notifyContentsDataSetChanged() {
-        setupContents()
+        runOnUiThread(Runnable {
+            setupContents()
+        })
+    }
+
+    override fun showProgressView() {
+        runOnUiThread(Runnable {
+            contentsRecyclerView.visibility = View.GONE
+            progressBar.visibility = View.VISIBLE
+            progressBar.bringToFront()
+        })
+    }
+
+    override fun hideProgressView() {
+        runOnUiThread(Runnable {
+            contentsRecyclerView.visibility = View.VISIBLE
+            progressBar.visibility = View.GONE
+        })
+    }
+
+    override fun showErrorMessage(message: String) {
+        runOnUiThread(Runnable {
+            AlertDialog.Builder(this)
+                    .setCancelable(true)
+                    .setTitle(getString(R.string.error_text))
+                    .setMessage(message)
+                    .setPositiveButton(getString(R.string.close_text), null)
+                    .show()
+        })
     }
 }

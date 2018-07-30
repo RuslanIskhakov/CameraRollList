@@ -38,6 +38,15 @@ class MainListPresenterUnitTest {
     }
 
     class MainListViewStub: MainListViewInterface {
+        override fun showProgressView() {
+        }
+
+        override fun hideProgressView() {
+        }
+
+        override fun showErrorMessage(message: String) {
+        }
+
         override fun startMediaPicker() {
         }
 
@@ -50,6 +59,19 @@ class MainListPresenterUnitTest {
     }
 
     class MainListModelStub: MainListModelInterface {
+        override fun isReadyForVideoProcessing(): Boolean {
+            return true
+        }
+
+        override fun submitVideoFileToProcess(filePath: String) {
+        }
+
+        override fun onVideoProcessingSuccess(outputPath: String) {
+        }
+
+        override fun onVideoProcessingFailure(errorMessage: String) {
+        }
+
         override fun logDebug(tag: String, message: String) {
             print(String.format("DEBUG: %s :: %s\n", tag, message))
         }

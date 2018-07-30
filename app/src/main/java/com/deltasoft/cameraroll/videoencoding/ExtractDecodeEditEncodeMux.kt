@@ -9,6 +9,7 @@ import android.media.MediaMuxer
 import android.os.Environment
 import android.util.Log
 import android.view.Surface
+import com.deltasoft.cameraroll.mvp.MainListModel
 import kotlinx.coroutines.experimental.async
 
 import java.io.File
@@ -23,16 +24,22 @@ class ExtractDecodeEditEncodeMux {
     /** Height of the output frames.  */
     private val mHeight = 320
     /** The destination file for the encoded output.  */
-    private val mOutputFile = "/sdcard/Download/test_result_480x320.MP4"
+    private var mOutputFile = ""
     /** The input MP4 video file to be resized  */
-    private val mInputFile = "/sdcard/DCIM/Camera/20180723_165258.mp4"
+    private var mInputFile = ""
 
-    fun test() {
+    fun start(inputFile: String, outputFile: String) {
         async {
             try {
+                mInputFile = String.format(inputFile)
+                mOutputFile = String.format(outputFile)
+                Log.d("dstest", "Start: "+inputFile+"|"+outputFile)
                 extractDecodeEditEncodeMux()
+                MainListModel.getInstance().onVideoProcessingSuccess(mOutputFile)
             } catch (e: Exception) {
                 Log.e(TAG, "Exception: ", e)
+                Log.e("dstest", "Exception: ", e)
+                MainListModel.getInstance().onVideoProcessingFailure(e.localizedMessage)
             }
         }
     }

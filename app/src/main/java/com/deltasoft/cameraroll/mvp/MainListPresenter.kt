@@ -8,7 +8,7 @@ import java.lang.ref.WeakReference
 
 class MainListPresenter (val model: MainListModelInterface){
 
-    private object Holder { val INSTANCE = MainListPresenter(MainListModel()) }
+    private object Holder { val INSTANCE = MainListPresenter(MainListModel.getInstance()) }
 
     companion object {
         val instance: MainListPresenter by lazy { Holder.INSTANCE }
@@ -24,6 +24,11 @@ class MainListPresenter (val model: MainListModelInterface){
                 return false
             } else {
                 this.view = WeakReference(view)
+                if (model.isReadyForVideoProcessing()) {
+                    view.hideProgressView()
+                } else {
+                    view.showProgressView()
+                }
                 return true
             }
 
@@ -63,13 +68,34 @@ class MainListPresenter (val model: MainListModelInterface){
                 if (selectionResult.size > 0) {
                     selectionResult.forEach {
                         if (it.toLowerCase().endsWith(".mp4")) {
-                            strongView.addItem(ContentsItem(ContentsType.VIDEO, it))
+                            strongView.showProgressView()
+                            model.submitVideoFileToProcess(it)
                         } else {
                             strongView.addItem(ContentsItem(ContentsType.IMAGE, "file://" + it))
                         }
                     }
                     strongView.notifyContentsDataSetChanged()
                 }
+            }
+        }
+    }
+
+    fun onVideoProcessingSuccess(outputPath: String) {
+        synchronized(this) {
+            val strongView = view?.get()
+            if (null!=strongView) {
+                strongView.addItem(ContentsItem(ContentsType.VIDEO, outputPath))
+                strongView.notifyContentsDataSetChanged()
+                strongView.hideProgressView()
+            }
+        }
+    }
+
+    fun onVideoProcessingFailure(errorMessage: String) {
+        synchronized(this) {
+            val strongView = view?.get()
+            if (null!=strongView) {
+                strongView.showErrorMessage(errorMessage)
             }
         }
     }
