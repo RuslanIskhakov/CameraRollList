@@ -16,6 +16,7 @@ class MainListPresenter (val model: MainListModelInterface){
     }
 
     private var view: WeakReference<MainListViewInterface>? = null
+    private var decodedVideoFile: String? = null
 
     fun bindView(view: MainListViewInterface): Boolean {
         synchronized(this) {
@@ -26,6 +27,11 @@ class MainListPresenter (val model: MainListModelInterface){
                 this.view = WeakReference(view)
                 if (model.isReadyForVideoProcessing()) {
                     view.hideProgressView()
+                    if (null!=decodedVideoFile) {
+                        view.addItem(ContentsItem(ContentsType.VIDEO, decodedVideoFile!!))
+                        view.notifyContentsDataSetChanged()
+                        decodedVideoFile = null
+                    }
                 } else {
                     view.showProgressView()
                 }
@@ -68,6 +74,7 @@ class MainListPresenter (val model: MainListModelInterface){
                 if (selectionResult.size > 0) {
                     selectionResult.forEach {
                         if (it.toLowerCase().endsWith(".mp4")) {
+                            decodedVideoFile = null
                             strongView.showProgressView()
                             model.submitVideoFileToProcess(it)
                         } else {
@@ -82,11 +89,15 @@ class MainListPresenter (val model: MainListModelInterface){
 
     fun onVideoProcessingSuccess(outputPath: String) {
         synchronized(this) {
+            model?.logDebug(TAG, "onVideoProcessingSuccess: $outputPath")
             val strongView = view?.get()
             if (null!=strongView) {
                 strongView.addItem(ContentsItem(ContentsType.VIDEO, outputPath))
                 strongView.notifyContentsDataSetChanged()
                 strongView.hideProgressView()
+                decodedVideoFile = null
+            } else {
+                decodedVideoFile = String.format(outputPath)
             }
         }
     }
