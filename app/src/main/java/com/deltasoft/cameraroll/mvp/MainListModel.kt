@@ -8,6 +8,10 @@ import com.deltasoft.cameraroll.videoencoding.ExtractDecodeEditEncodeMux
 import java.io.File
 import java.util.*
 
+/**
+ * A Model for MVP architecture patterns
+ */
+
 class MainListModel (val context: Context) : MainListModelInterface {
 
     companion object {

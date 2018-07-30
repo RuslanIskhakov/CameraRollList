@@ -1,6 +1,8 @@
 package com.deltasoft.cameraroll.mvp.interfaces
 
-import com.deltasoft.cameraroll.enums.MainListModelState
+/**
+ * Interface for MainListModel
+ */
 
 interface MainListModelInterface {
     fun logDebug(tag: String, message: String)

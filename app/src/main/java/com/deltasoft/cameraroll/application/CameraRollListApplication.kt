@@ -5,6 +5,10 @@ import android.util.Log
 import com.deltasoft.cameraroll.mvp.MainListModel
 import com.deltasoft.cameraroll.mvp.MainListPresenter
 
+/**
+ *  Application class. Holds a reference to MainListModel instance that exists as long as the app exists
+ */
+
 class CameraRollListApplication: Application() {
 
     companion object {

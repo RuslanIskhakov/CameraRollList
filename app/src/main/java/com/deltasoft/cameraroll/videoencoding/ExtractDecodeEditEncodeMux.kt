@@ -17,6 +17,10 @@ import java.io.IOException
 import java.nio.ByteBuffer
 import java.util.concurrent.atomic.AtomicReference
 
+/**
+ * A class to decode a video file and to encode it back with specified frame resolution
+ */
+
 class ExtractDecodeEditEncodeMux {
 
     /** Width of the output frames.  */

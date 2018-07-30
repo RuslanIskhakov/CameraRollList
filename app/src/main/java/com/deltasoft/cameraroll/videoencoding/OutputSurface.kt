@@ -13,21 +13,6 @@ import javax.microedition.khronos.egl.EGLSurface
 
 /**
  * Holds state associated with a Surface used for MediaCodec decoder output.
- *
- *
- * The (width,height) constructor for this class will prepare GL, create a SurfaceTexture,
- * and then create a Surface for that SurfaceTexture.  The Surface can be passed to
- * MediaCodec.configure() to receive decoder output.  When a frame arrives, we latch the
- * texture with updateTexImage, then render the texture with GL to a pbuffer.
- *
- *
- * The no-arg constructor skips the GL preparation step and doesn't allocate a pbuffer.
- * Instead, it just creates the Surface and SurfaceTexture, and when a frame arrives
- * we just draw it on whatever surface is current.
- *
- *
- * By default, the Surface will be using a BufferQueue in asynchronous mode, so we
- * can potentially drop frames.
  */
 internal class OutputSurface : SurfaceTexture.OnFrameAvailableListener {
     private var mEGL: EGL10? = null

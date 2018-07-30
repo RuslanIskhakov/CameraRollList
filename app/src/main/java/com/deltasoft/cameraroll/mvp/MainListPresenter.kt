@@ -6,6 +6,11 @@ import com.deltasoft.cameraroll.mvp.interfaces.MainListModelInterface
 import com.deltasoft.cameraroll.mvp.interfaces.MainListViewInterface
 import java.lang.ref.WeakReference
 
+
+/**
+ * A Presenter for MVP architecture pattern
+ */
+
 class MainListPresenter (val model: MainListModelInterface){
 
     private object Holder { val INSTANCE = MainListPresenter(MainListModel.getInstance()) }

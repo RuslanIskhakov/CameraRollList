@@ -14,6 +14,9 @@ import com.deltasoft.cameraroll.interfaces.OnPlusButtonClickListener
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.experimental.async
 
+/**
+ *  Adapter for media items to be displayed inside RecyclerView
+ */
 class ContentsAdapter(val activity: AppCompatActivity, contentsItems: ArrayList<ContentsItem>, val listener: OnPlusButtonClickListener) : RecyclerView.Adapter<ContentsAdapter.ViewHolder>() {
 
     //TODO store video playback position and resume from the same time position on video gets visible once again

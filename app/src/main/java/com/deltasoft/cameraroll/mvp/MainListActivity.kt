@@ -22,6 +22,9 @@ import com.erikagtierrez.multiple_media_picker.Gallery
 import com.deltasoft.cameraroll.R
 import com.deltasoft.cameraroll.mvp.interfaces.MainListViewInterface
 
+/**
+ * The single activity that is a View for MVP architecture pattern
+ */
 
 class MainListActivity : AppCompatActivity(), OnPlusButtonClickListener, MainListViewInterface {
 
