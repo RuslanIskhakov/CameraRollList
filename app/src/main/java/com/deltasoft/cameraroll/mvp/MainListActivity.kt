@@ -52,14 +52,14 @@ class MainListActivity : AppCompatActivity(), OnPlusButtonClickListener, MainLis
 
     private fun requestWriteExternalStoragePermission() {
         val permissions = arrayOfNulls<String>(1)
-        permissions[0] = Manifest.permission.WRITE_EXTERNAL_STORAGE
+        permissions[0] = Manifest.permission.READ_EXTERNAL_STORAGE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(permissions, 101)
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == 101 && permissions[0] == Manifest.permission.WRITE_EXTERNAL_STORAGE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == 101 && permissions[0] == Manifest.permission.READ_EXTERNAL_STORAGE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             mPresenter.onPlusButtonClick()
         }
     }
@@ -75,7 +75,7 @@ class MainListActivity : AppCompatActivity(), OnPlusButtonClickListener, MainLis
     }
 
     override fun onPlusButtonClick() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             mPresenter.onPlusButtonClick()
         } else {
             requestWriteExternalStoragePermission()
