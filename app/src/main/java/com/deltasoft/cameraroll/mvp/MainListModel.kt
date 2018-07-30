@@ -46,6 +46,7 @@ class MainListModel (val context: Context) : MainListModelInterface {
 
     override fun submitVideoFileToProcess(filePath: String) {
         synchronized(this) {
+            Log.d(TAG, "submitVideoFileToProcess(): $filePath|${isReadyForVideoProcessing()}")
             if (isReadyForVideoProcessing()) {
                 state = MainListModelState.PROCESSING_VIDEO
                 val outputPath = File(context.filesDir, UUID.randomUUID().toString() + ".mp4").absolutePath
@@ -57,6 +58,7 @@ class MainListModel (val context: Context) : MainListModelInterface {
 
     override fun onVideoProcessingSuccess(outputPath: String) {
         synchronized(this) {
+            Log.d(TAG, "onVideoProcessingSuccess(): $outputPath")
             state = MainListModelState.READY
             MainListPresenter.instance.onVideoProcessingSuccess(outputPath)
         }
@@ -64,6 +66,7 @@ class MainListModel (val context: Context) : MainListModelInterface {
 
     override fun onVideoProcessingFailure(errorMessage: String) {
         synchronized(this) {
+            Log.d(TAG, "onVideoProcessingFailure(): $errorMessage")
             state = MainListModelState.READY
             MainListPresenter.instance.onVideoProcessingFailure(errorMessage)
         }

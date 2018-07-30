@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import com.deltasoft.cameraroll.videoencoding.ExtractDecodeEditEncodeMux
@@ -37,20 +38,24 @@ class MainListActivity : AppCompatActivity(), OnPlusButtonClickListener, MainLis
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_list)
 
+        Log.d(TAG, "onCreate()")
         setupContents()
     }
 
     override fun onStart() {
         super.onStart()
+        Log.d(TAG, "onStart()")
         mPresenter.bindView(this)
     }
 
     override fun onStop() {
+        Log.d(TAG, "onStop()")
         mPresenter.unbindView(this)
         super.onStop()
     }
 
     private fun requestWriteExternalStoragePermission() {
+        Log.d(TAG, "requestWriteExternalStoragePermission()")
         val permissions = arrayOfNulls<String>(1)
         permissions[0] = Manifest.permission.READ_EXTERNAL_STORAGE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -65,6 +70,7 @@ class MainListActivity : AppCompatActivity(), OnPlusButtonClickListener, MainLis
     }
 
     private fun setupContents() {
+        Log.d(TAG, "setupContents()")
         if (mAdapter == null) {
             mAdapter = ContentsAdapter(this, mItems, this)
             contentsRecyclerView.setLayoutManager(LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false))
@@ -75,6 +81,7 @@ class MainListActivity : AppCompatActivity(), OnPlusButtonClickListener, MainLis
     }
 
     override fun onPlusButtonClick() {
+        Log.d(TAG, "onPlusButtonClick()")
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             mPresenter.onPlusButtonClick()
         } else {
@@ -83,6 +90,7 @@ class MainListActivity : AppCompatActivity(), OnPlusButtonClickListener, MainLis
     }
 
     override fun startMediaPicker() {
+        Log.d(TAG, "startMediaPicker()")
         val intent = Intent(this, Gallery::class.java)
         intent.putExtra("title", "Select media")
         // Mode 1 for both images and videos selection, 2 for images only and 3 for videos!
@@ -105,6 +113,7 @@ class MainListActivity : AppCompatActivity(), OnPlusButtonClickListener, MainLis
     }
 
     override fun addItem(item: ContentsItem) {
+        Log.d(TAG, "addItem()")
         runOnUiThread(Runnable {
             mItems.add(item)
         })
@@ -112,12 +121,14 @@ class MainListActivity : AppCompatActivity(), OnPlusButtonClickListener, MainLis
 
     override fun notifyContentsDataSetChanged() {
         runOnUiThread(Runnable {
+            Log.d(TAG, "notifyContentsDataSetChanged()")
             setupContents()
         })
     }
 
     override fun showProgressView() {
         runOnUiThread(Runnable {
+            Log.d(TAG, "showProgressView()")
             contentsRecyclerView.visibility = View.GONE
             progressBar.visibility = View.VISIBLE
             progressBar.bringToFront()
@@ -126,6 +137,7 @@ class MainListActivity : AppCompatActivity(), OnPlusButtonClickListener, MainLis
 
     override fun hideProgressView() {
         runOnUiThread(Runnable {
+            Log.d(TAG, "hideProgressView()")
             contentsRecyclerView.visibility = View.VISIBLE
             progressBar.visibility = View.GONE
         })
@@ -133,6 +145,7 @@ class MainListActivity : AppCompatActivity(), OnPlusButtonClickListener, MainLis
 
     override fun showErrorMessage(message: String) {
         runOnUiThread(Runnable {
+            Log.d(TAG, "showErrorMessage(): $message")
             AlertDialog.Builder(this)
                     .setCancelable(true)
                     .setTitle(getString(R.string.error_text))

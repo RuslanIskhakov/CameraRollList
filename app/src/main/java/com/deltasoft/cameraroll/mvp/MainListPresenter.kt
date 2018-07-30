@@ -59,6 +59,7 @@ class MainListPresenter (val model: MainListModelInterface){
 
     fun onPlusButtonClick() {
         synchronized(this) {
+            model?.logDebug(TAG, "onPlusButtonClick()")
             val strongView = view?.get()
             if (null!=strongView) {
                 strongView.startMediaPicker()
@@ -104,6 +105,7 @@ class MainListPresenter (val model: MainListModelInterface){
 
     fun onVideoProcessingFailure(errorMessage: String) {
         synchronized(this) {
+            model?.logDebug(TAG, "onVideoProcessingFailure: $errorMessage")
             val strongView = view?.get()
             if (null!=strongView) {
                 strongView.showErrorMessage(errorMessage)
