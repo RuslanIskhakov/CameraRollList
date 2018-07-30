@@ -64,7 +64,7 @@ class MainListPresenter (val model: MainListModelInterface){
 
     fun onPlusButtonClick() {
         synchronized(this) {
-            model?.logDebug(TAG, "onPlusButtonClick()")
+            model.logDebug(TAG, "onPlusButtonClick()")
             val strongView = view?.get()
             if (null!=strongView) {
                 strongView.startMediaPicker()
@@ -95,7 +95,7 @@ class MainListPresenter (val model: MainListModelInterface){
 
     fun onVideoProcessingSuccess(outputPath: String) {
         synchronized(this) {
-            model?.logDebug(TAG, "onVideoProcessingSuccess: $outputPath")
+            model.logDebug(TAG, "onVideoProcessingSuccess: $outputPath")
             val strongView = view?.get()
             if (null!=strongView) {
                 strongView.addItem(ContentsItem(ContentsType.VIDEO, outputPath))
@@ -110,7 +110,7 @@ class MainListPresenter (val model: MainListModelInterface){
 
     fun onVideoProcessingFailure(errorMessage: String) {
         synchronized(this) {
-            model?.logDebug(TAG, "onVideoProcessingFailure: $errorMessage")
+            model.logDebug(TAG, "onVideoProcessingFailure: $errorMessage")
             val strongView = view?.get()
             if (null!=strongView) {
                 strongView.showErrorMessage(errorMessage)

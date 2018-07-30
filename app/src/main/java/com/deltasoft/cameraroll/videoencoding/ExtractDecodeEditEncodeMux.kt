@@ -264,12 +264,12 @@ class ExtractDecodeEditEncodeMux {
             inputSurface: InputSurface,
             outputSurface: OutputSurface) {
 
-        var videoDecoderOutputBufferInfo: MediaCodec.BufferInfo? = null
-        var videoEncoderOutputBufferInfo: MediaCodec.BufferInfo? = null
+        var videoDecoderOutputBufferInfo: MediaCodec.BufferInfo?
+        var videoEncoderOutputBufferInfo: MediaCodec.BufferInfo?
         videoDecoderOutputBufferInfo = MediaCodec.BufferInfo()
         videoEncoderOutputBufferInfo = MediaCodec.BufferInfo()
         // We will get these from the decoders when notified of a format change.
-        var decoderOutputVideoFormat: MediaFormat? = null
+        var decoderOutputVideoFormat: MediaFormat?
         // We will get these from the encoders when notified of a format change.
         var encoderOutputVideoFormat: MediaFormat? = null
         // We will determine these once we have the output format.

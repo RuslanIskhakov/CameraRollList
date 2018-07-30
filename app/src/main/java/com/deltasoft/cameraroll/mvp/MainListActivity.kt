@@ -104,8 +104,8 @@ class MainListActivity : AppCompatActivity(), OnPlusButtonClickListener, MainLis
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
-        if (requestCode === OPEN_MEDIA_PICKER) {
-            if (resultCode === RESULT_OK && data != null) {
+        if (requestCode == OPEN_MEDIA_PICKER) {
+            if (resultCode == RESULT_OK && data != null) {
                 mPresenter.bindView(this) //it has been unbound
                 val selectionResult = data.getStringArrayListExtra("result")
                 mPresenter.onMediaSelectionResult(selectionResult)

@@ -87,8 +87,11 @@ class ContentsAdapter(val activity: AppCompatActivity, contentsItems: ArrayList<
                     ContentsType.VIDEO -> {
                         if (surfaceCreated) {
                             releaseMediaPlayer()
-                            if (filePath != field) createMediaPlayer(filePath!!, 0)
+                            if (filePath != field) createMediaPlayer(filePath!!)
                         }
+                    }
+                    else -> {
+
                     }
                 }
             }
@@ -131,7 +134,7 @@ class ContentsAdapter(val activity: AppCompatActivity, contentsItems: ArrayList<
                 if (null != filePath) {
                     async {
                         releaseMediaPlayer()
-                        createMediaPlayer(filePath!!, 1)
+                        createMediaPlayer(filePath!!)
                         activity.runOnUiThread(Runnable {
                             textView?.visibility = View.GONE
                         })
@@ -144,7 +147,7 @@ class ContentsAdapter(val activity: AppCompatActivity, contentsItems: ArrayList<
             mediaPlayer?.start()
         }
 
-        private fun createMediaPlayer(path: String, src: Int) {
+        private fun createMediaPlayer(path: String) {
             mediaPlayer = MediaPlayer()
             mediaPlayer?.setDisplay(surfaceHolder)
             mediaPlayer?.setOnPreparedListener(this)
