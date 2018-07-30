@@ -1,14 +1,15 @@
 package com.deltasoft.cameraroll.adapter
 
 import android.media.MediaPlayer
-import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.*
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import com.deltasoft.cameraroll.R
+import com.deltasoft.cameraroll.enums.ContentsType
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.experimental.async
 
@@ -30,27 +31,41 @@ class ContentsAdapter(val activity: AppCompatActivity, contentsItems: ArrayList<
     }
 
     override fun getItemCount(): Int {
-        return items.size
+        return items.size + 1// +1 item for New Item button
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = items.get(position)
-        holder.setDataSource(item)
+        if (position < getItemCount()-1) {
+            holder.setDataSource(items.get(position))
+        } else {
+            holder.setDataSource(ContentsItem.getPlusItem())
+        }
     }
 
-    class ViewHolder(val activity: AppCompatActivity, itemView: View?) : RecyclerView.ViewHolder(itemView), SurfaceHolder.Callback, MediaPlayer.OnPreparedListener {
+    class ViewHolder(val activity: AppCompatActivity, itemView: View?) : RecyclerView.ViewHolder(itemView), SurfaceHolder.Callback, MediaPlayer.OnPreparedListener, View.OnClickListener {
 
-        var isVideo: Boolean = false
+        var type: ContentsType = ContentsType.PLUS_ITEM
             set(value) {
                 field = value
-                if (value) {
-                    surfaceView?.visibility = View.VISIBLE
-                    textView?.visibility = View.VISIBLE
-                    imageView?.visibility = View.GONE
-                } else {
-                    surfaceView?.visibility = View.GONE
-                    textView?.visibility = View.GONE
-                    imageView?.visibility = View.VISIBLE
+                when (value) {
+                        ContentsType.IMAGE -> {
+                            surfaceView?.visibility = View.GONE
+                            textView?.visibility = View.GONE
+                            imageView?.visibility = View.VISIBLE
+                            imageButton?.visibility = View.GONE
+                        }
+                        ContentsType.VIDEO -> {
+                            surfaceView?.visibility = View.VISIBLE
+                            textView?.visibility = View.VISIBLE
+                            imageView?.visibility = View.GONE
+                            imageButton?.visibility = View.GONE
+                        }
+                        else -> {
+                            surfaceView?.visibility = View.GONE
+                            textView?.visibility = View.GONE
+                            imageView?.visibility = View.GONE
+                            imageButton?.visibility = View.VISIBLE
+                        }
                 }
             }
         var filePath: String? = null
@@ -60,21 +75,24 @@ class ContentsAdapter(val activity: AppCompatActivity, contentsItems: ArrayList<
                 } else {
                     field = String.format(value)
                 }
-                if (isVideo) {
-                    if (surfaceCreated) {
-                        releaseMediaPlayer()
-                        if (filePath != field) createMediaPlayer(filePath!!, 0)
+
+                when (type) {
+                    ContentsType.IMAGE -> {
+                        Picasso.get().load(filePath).resizeDimen(R.dimen.video_frame_width, R.dimen.video_frame_height).error(R.mipmap.ic_launcher_round).into(imageView);
                     }
-                } else {
-                    Picasso.get().load(filePath).resizeDimen(R.dimen.video_frame_width, R.dimen.video_frame_height).error(R.mipmap.ic_launcher_round).into(imageView);
+                    ContentsType.VIDEO -> {
+                        if (surfaceCreated) {
+                            releaseMediaPlayer()
+                            if (filePath != field) createMediaPlayer(filePath!!, 0)
+                        }
+                    }
                 }
-
-
             }
         var textView: TextView? = null
         var surfaceView: SurfaceView? = null
         var surfaceHolder: SurfaceHolder? = null
         var imageView: ImageView? = null
+        var imageButton: ImageButton? = null
         var mediaPlayer: MediaPlayer? = null
         var surfaceCreated = false
 
@@ -85,6 +103,12 @@ class ContentsAdapter(val activity: AppCompatActivity, contentsItems: ArrayList<
             surfaceHolder = surfaceView?.holder
             surfaceHolder?.addCallback(this)
             imageView = itemView?.findViewById(R.id.item_image)
+            imageButton = itemView?.findViewById(R.id.item_plus_btn)
+            imageButton?.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View?) {
+
         }
 
         override fun surfaceChanged(p0: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {
@@ -98,15 +122,13 @@ class ContentsAdapter(val activity: AppCompatActivity, contentsItems: ArrayList<
         }
 
         override fun surfaceCreated(p0: SurfaceHolder?) {
-            Log.d("dstest", "surfaceCreated (1)")
-            if (isVideo) {
+            if (type == ContentsType.VIDEO) {
                 surfaceCreated = true
                 if (null != filePath) {
                     async {
                         releaseMediaPlayer()
                         createMediaPlayer(filePath!!, 1)
                         activity.runOnUiThread(Runnable {
-                            Log.d("dstest", "surfaceCreated (2)")
                             textView?.visibility = View.GONE
                         })
                     }
@@ -119,7 +141,6 @@ class ContentsAdapter(val activity: AppCompatActivity, contentsItems: ArrayList<
         }
 
         private fun createMediaPlayer(path: String, src: Int) {
-            Log.d("dstest", "Create mediaplayer: $src")
             mediaPlayer = MediaPlayer()
             mediaPlayer?.setDisplay(surfaceHolder)
             mediaPlayer?.setOnPreparedListener(this)
@@ -144,7 +165,7 @@ class ContentsAdapter(val activity: AppCompatActivity, contentsItems: ArrayList<
 
         public fun setDataSource(item: ContentsItem) {
             //the order of parameters value updates matters
-            this.isVideo = item.isVideo
+            this.type = item.type
             this.filePath = item.filePath
         }
     }

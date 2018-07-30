@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager
 import com.deltasoft.cameraroll.videoencoding.ExtractDecodeEditEncodeMux
 import com.deltasoft.cameraroll.adapter.ContentsAdapter
 import com.deltasoft.cameraroll.adapter.ContentsItem
+import com.deltasoft.cameraroll.enums.ContentsType
 import kotlinx.android.synthetic.main.activity_main_list.*
 
 class MainListActivity : AppCompatActivity() {
@@ -22,22 +23,14 @@ class MainListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main_list)
 
         //TODO make enum for contents type image/video
-        mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
-        mItems.add(ContentsItem(false, "file:///sdcard/Download/fuu_400x400.jpg"))
-        mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
-        mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
-        mItems.add(ContentsItem(false, "file:///sdcard/Download/fuu_400x400.jpg"))
-        mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
-        mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
-        mItems.add(ContentsItem(true, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
-
-//        mItems.add(ContentsItem(true, "item 1"))
-//        mItems.add(ContentsItem(true, "item 2"))
-//        mItems.add(ContentsItem(true, "item 3"))
-//        mItems.add(ContentsItem(true, "item 4"))
-//        mItems.add(ContentsItem(true, "item 5"))
-//        mItems.add(ContentsItem(true, "item 6"))
-//        mItems.add(ContentsItem(true, "item 7"))
+        mItems.add(ContentsItem(ContentsType.VIDEO, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
+        mItems.add(ContentsItem(ContentsType.IMAGE, "file:///sdcard/Download/fuu_400x400.jpg"))
+//        mItems.add(ContentsItem(ContentsType.VIDEO, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
+//        mItems.add(ContentsItem(ContentsType.VIDEO, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
+//        mItems.add(ContentsItem(ContentsType.IMAGE, "file:///sdcard/Download/fuu_400x400.jpg"))
+//        mItems.add(ContentsItem(ContentsType.VIDEO, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
+//        mItems.add(ContentsItem(ContentsType.VIDEO, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
+//        mItems.add(ContentsItem(ContentsType.VIDEO, "/sdcard/DCIM/Camera/20180723_165258.mp4"))
 
         setupContents()
 

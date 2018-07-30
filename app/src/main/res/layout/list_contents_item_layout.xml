@@ -27,4 +27,10 @@
         android:layout_height="@dimen/video_frame_height"
         android:visibility="gone"
         android:src="@mipmap/ic_launcher_round"/>
+
+    <ImageButton
+        android:id="@+id/item_plus_btn"
+        android:layout_width="@dimen/video_frame_width"
+        android:layout_height="@dimen/video_frame_height"
+        android:src="@drawable/ic_add_to_photos_black_48dp"/>
 </RelativeLayout>
